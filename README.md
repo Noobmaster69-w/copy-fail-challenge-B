@@ -155,3 +155,52 @@ cat /proc/modules | grep algif # Check AF_ALG availability via procfs
   echo "algif_aead en /proc/modules:"
   grep algif_aead /proc/modules 2>/dev/null || echo "(no encontrado)"
 } > /tmp/hito1.txt && cat /tmp/hito1.txt # Generate and save Milestone 1 evidence report
+
+History:
+ 1  apt update
+    2  apt install gh
+    3  gh api user --jq '"\(.name) → \(.email // .login)"'
+    4  git config --global user.name "Bryan_david"
+    5  git config --global user.email "brmerinoji@uide.edu.ec"
+    6  git config --global --add safe.directory /workspaces/copy-fail-challenge-1
+    7  make setup
+    8  apt update 
+    9  apt install -y file
+   10  make rootfs
+   11  make qemu
+   12  cp /tmp/hito1.txt evidence/hito1_vuln_confirmed.txt
+   13  nano evidence/hito1_vuln_confirmed.txt
+   14  nano /workspaces/copy-fail-challenge-B/evidence/hito1_vuln_confirmed.txt
+   15  cat <<EOF > /workspaces/copy-fail-challenge-B/evidence/hito1_vuln_confirmed.txt
+=== HITO 1: KERNEL VULNERABLE CONFIRMADO ===
+Fecha: Mon May 11 13:27:35 UTC 2026
+Hostname: copy-fail-Bryandavid
+Kernel: 6.12.0
+Identidad: uid=1001(student) gid=1001(student) groups=1001(student)
+Módulos AF_ALG:
+(no encontrado con lsmod, verificar /proc/modules)
+algif_aead en /proc/modules:
+(no encontrado)
+EOF
+
+   16  cat /workspaces/copy-fail-challenge-B/evidence/hito1_vuln_confirmed.txt
+   17  mkdir -p /workspaces/copy-fail-challenge-B/evidence
+   18  cat <<EOF > /workspaces/copy-fail-challenge-B/evidence/hito1_vuln_confirmed.txt
+=== HITO 1: KERNEL VULNERABLE CONFIRMADO ===
+Fecha: Mon May 11 13:27:35 UTC 2026
+Hostname: copy-fail-Bryandavid
+Kernel: 6.12.0
+Identidad: uid=1001(student) gid=1001(student) groups=1001(student)
+Módulos AF_ALG:
+(no encontrado con lsmod, verificar /proc/modules)
+algif_aead en /proc/modules:
+(no encontrado)
+EOF
+
+   19  cat /workspaces/copy-fail-challenge-B/evidence/hito1_vuln_confirmed.txt
+   20  git add evidence/hito1_vuln_confirmed.txt
+   21  git commit -m "hito-1: kernel vulnerable confirmado"
+   22  git tag -a hito-1 -m "Kernel vulnerable corriendo, algif_aead confirmado"
+   23  git push origin main --tags
+   24  story
+   25  history
