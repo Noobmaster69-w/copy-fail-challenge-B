@@ -136,3 +136,22 @@ Esta v2 incorpora los siguientes fixes respecto a la v1:
 - BusyBox: deshabilitado `CONFIG_TC` (rompe compilación con kernels nuevos)
 - BusyBox: forzado `CONFIG_STATIC=y` y verificado con `file`
 - Workflow Actions: greps de verificación con `|| echo`, tolerantes
+
+
+
+En QEMU
+uname -r # Verify the running kernel version to ensure target compatibility
+lsmod | grep alg # Check for loaded crypto modules
+id / whoami # Confirm current user identity
+cat /proc/modules | grep algif # Check AF_ALG availability via procfs
+{
+  echo "=== HITO 1: KERNEL VULNERABLE CONFIRMADO ==="
+  echo "Fecha: $(date)"
+  echo "Hostname: $(hostname)"
+  echo "Kernel: $(uname -r)"
+  echo "Identidad: $(id)"
+  echo "Módulos AF_ALG:"
+  lsmod | grep -i alg || echo "(no encontrado con lsmod, verificar /proc/modules)"
+  echo "algif_aead en /proc/modules:"
+  grep algif_aead /proc/modules 2>/dev/null || echo "(no encontrado)"
+} > /tmp/hito1.txt && cat /tmp/hito1.txt # Generate and save Milestone 1 evidence report
