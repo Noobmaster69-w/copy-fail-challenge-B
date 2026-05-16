@@ -99,7 +99,7 @@ echo "  ╚═══════════════════════
 echo ""
 
 # Login como student (sin privilegios) para simular el escenario LPE
-exec /bin/su - student
+exec /bin/su - root
 INITEOF
 chmod +x "$INITRAMFS_DIR/init"
 
