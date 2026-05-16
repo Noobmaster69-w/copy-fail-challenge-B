@@ -1,0 +1,8 @@
+=== HITO 3: MITIGACIÓN DE VULNERABILIDAD ===
+Fecha: Fri May 15 23:12:00 ECT 2026
+Kernel: 6.12.0
+--- Configuración de Persistencia Real Aplicada ---
+install algif_aead /bin/false
+blacklist algif_aead
+--- Estado del Entorno ---
+Mitigación configurada exitosamente mediante la modificación de la receta initramfs (scripts/03_build_rootfs.sh).
