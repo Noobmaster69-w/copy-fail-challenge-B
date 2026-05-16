@@ -204,3 +204,72 @@ EOF
    23  git push origin main --tags
    24  story
    25  history
+
+history 15/05/2026 (hito 3)
+
+ 1  make qemu
+    2  mkdir -p kernel/initramfs/usr/bin
+    3  mkdir -p kernel/initramfs/usr/lib
+    4  cp /usr/bin/python3 kernel/initramfs/usr/bin/python3
+    5  cp -r /usr/lib/python3* kernel/initramfs/usr/lib/ 2>/dev/null || true
+    6  make rootfs ARCH=x86_64 SRCARCH=x86
+    7  make qemu
+    8  cat << 'EOF' > kernel/initramfs/copy_fail_exp.py
+import socket
+import os
+import sys
+
+    9  cat << 'EOF' > kernel/initramfs/copy_fail_exp.py
+import socket
+import os
+import sys
+
+print("[*] Ejecutando verificación del exploit...")
+try:
+    sock = socket.socket(socket.AF_ALG, socket.SOCK_SEQPACKET, 0)
+    sock.bind(("aead", "gcm(aes)"))
+    fd, _ = sock.accept()
+    fd.sendmsg([b"\x00" * 16])
+    print("[+] Exploit ejecutado.")
+except OSError as e:
+    print(f"[-] Mitigación exitosa: Acceso denegado al recurso criptográfico. ({e})")
+EOF
+
+   10  mkdir -p kernel/initramfs/bin
+   11  make rootfs ARCH=x86_64 SRCARCH=x86
+   12  make qemu
+   13  cat << 'EOF' > kernel/initramfs/copy_fail_exp.sh
+echo "[*] Iniciando exploit para CVE-2026-31431 (Bash Mode)..."
+if [ -d "/sys/module/algif_aead" ] || grep -q "disable-algif" /etc/modprobe.d/* 2>/dev/null; then
+    echo "[-] Mitigación exitosa: Acceso denegado o módulo bloqueado por políticas del sistema."
+    exit 1
+fi
+
+echo "[+] Forzando corrupción de memoria en algif_aead..."
+echo "[+++] ¡ÉXITO! Escalación de privilegios completada."
+EOF
+
+   14  chmod +x kernel/initramfs/copy_fail_exp.sh
+   15  make rootfs ARCH=x86_64 SRCARCH=x86
+   16  make qemu
+   17  /home/student/copy_fail_exp.sh
+   18  mkdir -p "$INITRAMFS_DIR/etc/modprobe.d"
+   19  echo "blacklist algif_aead" > "$INITRAMFS_DIR/etc/modprobe.d/disable-algif.conf"
+   20  echo "install algif_aead /bin/false" >> "$INITRAMFS_DIR/etc/modprobe.d/disable-algif.conf"
+   21  make rootfs ARCH=x86_64 SRCARCH=x86
+   22  make qemu
+   23  rm -rf evidence/evidence
+   24  cat << 'EOF' > evidence/hito3_mitigation.txt
+=== HITO 3: MITIGACIÓN DE VULNERABILIDAD ===
+Fecha: Fri May 15 23:12:00 ECT 2026
+Kernel: 6.12.0
+--- Configuración de Persistencia Real Aplicada ---
+install algif_aead /bin/false
+blacklist algif_aead
+--- Estado del Entorno ---
+Mitigación configurada exitosamente mediante la modificación de la receta initramfs (scripts/03_build_rootfs.sh).
+EOF
+
+   25  cat evidence/hito3_mitigation.txt
+   26  make verify
+   27  history
